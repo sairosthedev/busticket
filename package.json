@@ -1,0 +1,44 @@
+{
+  "name": "busticketbooking",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@clerk/clerk-react": "^5.9.4",
+    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/stripe-js": "^4.6.0",
+    "@supabase/supabase-js": "^2.46.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "framer-motion": "^10.x",
+    "mongoose": "^8.7.0",
+    "nodemailer": "^6.9.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.x",
+    "react-router-dom": "^6.x",
+    "stripe": "^17.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.x",
+    "autoprefixer": "^10.x",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "postcss": "^8.x",
+    "tailwindcss": "^3.x",
+    "vite": "^4.x"
+  }
+}
