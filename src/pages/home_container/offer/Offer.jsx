@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Save from "../../../assets/save.png";
 import { FaCopy } from 'react-icons/fa';
 
 const Offer = () => {
@@ -31,7 +30,7 @@ const Offer = () => {
 
       <div className="grid grid-cols-1 gap-8">
         <div className="w-full h-auto rounded-sm bg-zinc-900 p-8 flex items-center gap-x-6 shadow-lg border border-zinc-800">
-          <img src={Save} alt="Special Offer" className="w-52 aspect-[2/1] object-contain object-center rounded-sm shadow-md" />
+          <div className="w-52 aspect-[2/1] bg-zinc-800 rounded-sm" /> {/* Placeholder for image */}
           <div className="flex flex-1 flex-col space-y-5">
             <h1 className="text-2xl font-bold text-white">
               Get 30% off on your first booking
@@ -61,4 +60,4 @@ const Offer = () => {
   );
 };
 
-export default Offer;
+export default Offer; 

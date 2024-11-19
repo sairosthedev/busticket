@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -18,8 +18,25 @@ import Checkout from './components/Checkout';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 
+// Create a new ScrollToTop component
+const ScrollToTop = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  return null;
+};
+
 const AppContent = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
+  // Add effect to scroll to top on page refresh
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className='w-full min-h-screen bg-neutral-950 text-neutral-300 flex flex-col overflow-hidden'>
@@ -83,6 +100,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop /> {/* Add ScrollToTop component */}
         <AppContent />
       </Router>
     </AuthProvider>
