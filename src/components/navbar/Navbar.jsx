@@ -3,25 +3,34 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from "../../assets/logo.png"
 import { LiaTimesSolid } from 'react-icons/lia';
 import { FaBars, FaPhone } from 'react-icons/fa';
-import { FaSearch, FaTicketAlt, FaRoute } from 'react-icons/fa';
+import { FaSearch, FaTicketAlt, FaRoute, FaUser } from 'react-icons/fa';
 import Theme from '../theme/Theme';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [searchOpen, setSearchOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
     const { user, signOut } = useAuth();
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
-    const navLinks = [
+    // Public links (always visible)
+    const publicLinks = [
         { href: "/", label: "Home", icon: null },
+        { href: "/services", label: "Services", icon: null },
+    ];
+
+    // Protected links (only visible when logged in)
+    const protectedLinks = [
         { href: "/routes", label: "Routes", icon: FaRoute },
         { href: "/bus", label: "Find Bus", icon: FaSearch },
         { href: "/track", label: "Track Bus", icon: null },
         { href: "/manage-booking", label: "Manage Booking", icon: FaTicketAlt },
     ];
+
+    // Get current navigation links based on auth status
+    const navLinks = user ? [...publicLinks, ...protectedLinks] : publicLinks;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -33,7 +42,7 @@ const Navbar = () => {
 
     useEffect(() => {
         setOpen(false);
-        setSearchOpen(false);
+        setShowUserMenu(false);
     }, [location]);
 
     const handleSignOut = async () => {
@@ -44,6 +53,31 @@ const Navbar = () => {
             console.error('Error signing out:', error.message);
         }
     };
+
+    const UserMenu = () => (
+        <div className="absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-sm shadow-lg">
+            <div className="py-2">
+                <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800"
+                >
+                    Profile
+                </Link>
+                <Link
+                    to="/manage-booking"
+                    className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800"
+                >
+                    My Bookings
+                </Link>
+                <button
+                    onClick={handleSignOut}
+                    className="w-full text-left px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800"
+                >
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <nav className={`w-full h-[8ch] fixed top-0 z-50 transition-all duration-300
@@ -81,44 +115,20 @@ const Navbar = () => {
 
                 {/* Right Section */}
                 <div className="hidden lg:flex items-center space-x-6">
-                    {/* Help Button */}
-                    <div className="relative group">
-                        <div className="bg-violet-600 group-hover:bg-violet-700 transition-all duration-300 
-                            rounded-md px-6 py-2 cursor-pointer transform group-hover:translate-y-[-2px]">
-                            <div className="absolute top-[50%] -left-4 translate-y-[-50%] w-8 h-8 rounded-full 
-                                bg-violet-600 group-hover:bg-violet-700 transition-all duration-300 border-4 
-                                border-white dark:border-neutral-900 flex items-center justify-center
-                                group-hover:rotate-12">
-                                <FaPhone className="text-neutral-50 text-xs" />
-                            </div>
-                            <div className="space-y-0.5">
-                                <p className="text-[10px] text-neutral-200 font-light">Need Help?</p>
-                                <p className="text-[11px] font-normal text-neutral-50 tracking-wide">
-                                    +263 786 033 933
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                     {/* Theme Toggle */}
                     <Theme />
 
                     {/* Auth Buttons */}
                     {user ? (
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                to="/profile"
-                                className="text-white hover:text-violet-400 transition-colors duration-300"
-                            >
-                                My Account
-                            </Link>
+                        <div className="relative">
                             <button
-                                onClick={handleSignOut}
-                                className="bg-violet-600 text-white px-4 py-2 rounded-sm 
-                                    hover:bg-violet-700 transition-colors duration-300"
+                                onClick={() => setShowUserMenu(!showUserMenu)}
+                                className="flex items-center space-x-2 text-white hover:text-violet-400 transition-colors duration-300"
                             >
-                                Sign Out
+                                <FaUser />
+                                <span>{user.email}</span>
                             </button>
+                            {showUserMenu && <UserMenu />}
                         </div>
                     ) : (
                         <Link

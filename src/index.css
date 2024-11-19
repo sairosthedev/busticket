@@ -13,6 +13,11 @@
   font-style: normal;
 }
 
+/* Add this near the top of the file, after font imports but before Tailwind imports */
+:root {
+  color-scheme: dark;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -34,22 +39,22 @@ h1, h2, h3, h4, h5, h6, .font-bold {
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
-  background: #f9fafb;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #171717;
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cacaca;
+  background: #404040;
   border-radius: 8px;
   transition: all 0.5s ease-out;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a4a4a4;
+  background: #525252;
   border-radius: 8px;
 }
 

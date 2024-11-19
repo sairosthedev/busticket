@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../url/supabaseClient';
+import { supabase, supabaseAdmin } from '../utils/supabaseClient';
 
 const AuthContext = createContext({});
 
@@ -25,9 +25,64 @@ export const AuthProvider = ({ children }) => {
         return () => subscription.unsubscribe();
     }, []);
 
+    const signUp = async ({ email, password }) => {
+        try {
+            // Use admin client to create user
+            const { data, error } = await supabaseAdmin.auth.admin.createUser({
+                email,
+                password,
+                email_confirm: true,
+                user_metadata: {
+                    email_confirmed: true
+                }
+            });
+
+            if (error) {
+                console.error('SignUp error details:', error);
+                throw error;
+            }
+
+            console.log('Signup successful:', data);
+            
+            // Automatically sign in the user
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (signInError) throw signInError;
+
+            return { data, error: null };
+        } catch (error) {
+            console.error('SignUp error caught:', error);
+            return { 
+                data: null, 
+                error: {
+                    message: error.message || 'Failed to create account',
+                    details: error
+                }
+            };
+        }
+    };
+
+    const signIn = async ({ email, password }) => {
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) throw error;
+            return { data, error: null };
+        } catch (error) {
+            console.error('SignIn error:', error);
+            return { data: null, error };
+        }
+    };
+
     const value = {
-        signUp: (data) => supabase.auth.signUp(data),
-        signIn: (data) => supabase.auth.signInWithPassword(data),
+        signUp,
+        signIn,
         signOut: () => supabase.auth.signOut(),
         user,
     };
