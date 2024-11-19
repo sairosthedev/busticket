@@ -25,9 +25,43 @@ export const AuthProvider = ({ children }) => {
         return () => subscription.unsubscribe();
     }, []);
 
+    const signOut = async () => {
+        try {
+            // Clear all local storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            try {
+                // Attempt to sign out from Supabase
+                await supabase.auth.signOut();
+            } catch (supabaseError) {
+                console.log('Supabase signout error:', supabaseError);
+                // Continue with cleanup even if Supabase throws an error
+            }
+
+            // Clear user state
+            setUser(null);
+
+            // Clear any Supabase-specific items
+            for (let key in localStorage) {
+                if (key.startsWith('sb-')) {
+                    localStorage.removeItem(key);
+                }
+            }
+
+            // Force a clean reload to the home page
+            window.location.replace('/');
+            
+        } catch (error) {
+            console.error('Error during signout cleanup:', error);
+            // Force sign out anyway
+            setUser(null);
+            window.location.replace('/');
+        }
+    };
+
     const signUp = async ({ email, password }) => {
         try {
-            // Use admin client to create user
             const { data, error } = await supabaseAdmin.auth.admin.createUser({
                 email,
                 password,
@@ -37,24 +71,10 @@ export const AuthProvider = ({ children }) => {
                 }
             });
 
-            if (error) {
-                console.error('SignUp error details:', error);
-                throw error;
-            }
-
-            console.log('Signup successful:', data);
-            
-            // Automatically sign in the user
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
-
-            if (signInError) throw signInError;
-
+            if (error) throw error;
             return { data, error: null };
         } catch (error) {
-            console.error('SignUp error caught:', error);
+            console.error('SignUp error:', error);
             return { 
                 data: null, 
                 error: {
@@ -83,7 +103,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         signUp,
         signIn,
-        signOut: () => supabase.auth.signOut(),
+        signOut,
         user,
     };
 
